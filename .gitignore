@@ -361,3 +361,13 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/OSU Helpers/OSU_Helpers/AriaConnection.cs
+/OSU Helpers/OSU_Helpers/CitrixServerSelection.cs
+/OSU Helpers/OSU_Helpers/AriaConnection.cs
+/OSU Helpers/OSU_Helpers/DICOMEntities.cs
+/OSU Helpers/OSU_Helpers/AriaConnection.cs
+/OSU Helpers/OSU_Helpers/Gradient20Fits.txt
+/OSU Helpers/OSU_Helpers/Gradient50Fits.txt
+/OSU Helpers/OSU_Helpers/Gradient_Data.cs
+/OSU Helpers/OSU_Helpers/SRT_Metrics.cs
+/OSU Helpers/OSU_Helpers/SRT_Metrics_Helper.cs
