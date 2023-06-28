@@ -1,4 +1,4 @@
-# CC-Gen Manuscript Repository
+# Calculated Contour Generator (CC-Gen)
 
 The basic premise of CC-Gen is to quickly generate multiple structures from a template that is provided by the user. The Structure Set that is in Context, i.e. visible in the views within External Beam Planning, can have structures added to it or structures that exist can be overwritten with the script.
 
