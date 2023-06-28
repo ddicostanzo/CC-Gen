@@ -75,30 +75,6 @@ namespace OSU_Helpers
             return _ResultantRing;
         }
 
-        ///// <summary>
-        ///// Generates a ring from a base structure
-        ///// </summary>
-        ///// <param name="structure">The base structure</param>
-        ///// <param name="ss">The structure set to use during calculation</param>
-        ///// <param name="StartDistance_mm">The distance the ring should start from the base structure in milimeters</param>
-        ///// <param name="EndDistance_mm">The distance the ring should end from the base structure in milimeters</param>
-        ///// <returns>Returns a structure that is the ring created at the specified distances from the base structure.</returns>
-        //public static Structure GenerateRing(this Structure structure, StructureSet ss, double StartDistance_mm, double EndDistance_mm)
-        //{
-        //    Structure exp1 = ss.AddStructure("CONTROL", "Exp1");
-        //    Structure exp2 = ss.AddStructure("CONTROL", "Exp2");
-
-        //    exp1.SegmentVolume = structure.Margin(StartDistance_mm);
-        //    exp2.SegmentVolume = structure.Margin(EndDistance_mm);
-
-        //    structure.SegmentVolume = exp2.Sub(exp1.SegmentVolume);
-
-        //    ss.RemoveStructure(exp1);
-        //    ss.RemoveStructure(exp2);
-
-        //    return structure;
-        //}
-
         /// <summary>
         /// Generates a ring <c>SegmentVolume</c> from a collection of base structures that have been added together
         /// </summary>
@@ -107,9 +83,9 @@ namespace OSU_Helpers
         /// <param name="StartDistance_mm">The distance the ring should start from the base structure in milimeters</param>
         /// <param name="EndDistance_mm">The distance the ring should end from the base structure in milimeters</param>
         /// <returns>Returns a <c>SegmentVolume</c> that is the ring created at the specified distances from the base structure.</returns>
-        public static SegmentVolume GenerateRing(this ICollection<Structure> structure, StructureSet ss, double StartDistance_mm, double EndDistance_mm)
+        public static SegmentVolume GenerateRing(this ICollection<Structure> structure, StructureSet ss, double StartDistance_mm, double EndDistance_mm, bool HighResFlag = false)
         {
-            SegmentVolume sv = structure.TotalSegmentVolume(ss);
+            SegmentVolume sv = TotalSegmentVolume(structure, ss, HighResFlag);
 
             Structure exp1 = ss.AddStructure("CONTROL", "Exp1");
             Structure exp2 = ss.AddStructure("CONTROL", "Exp2");
@@ -124,7 +100,6 @@ namespace OSU_Helpers
 
             return sv;
         }
-
 
         /// <summary>
         /// Generates a segment volume that is the union of all structures within the collection. Does not protect against approved structures.
