@@ -82,6 +82,7 @@ namespace OSU_Helpers
         /// <param name="ss">The structure set to use during calculation</param>
         /// <param name="StartDistance_mm">The distance the ring should start from the base structure in milimeters</param>
         /// <param name="EndDistance_mm">The distance the ring should end from the base structure in milimeters</param>
+        /// <param name="HighResFlag">If the ring should be high resolution or not. Defaults to False.</param>
         /// <returns>Returns a <c>SegmentVolume</c> that is the ring created at the specified distances from the base structure.</returns>
         public static SegmentVolume GenerateRing(this ICollection<Structure> structure, StructureSet ss, double StartDistance_mm, double EndDistance_mm, bool HighResFlag = false)
         {
