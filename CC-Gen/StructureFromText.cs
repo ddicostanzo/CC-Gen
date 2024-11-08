@@ -9,6 +9,7 @@ using OSU_Helpers;
 using System.Windows;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using StructureBuilder;
 
 namespace OSUStructureGenerator
 {
@@ -29,6 +30,8 @@ namespace OSUStructureGenerator
         /// The flag as to whether to overwrite a structure or create a new one.
         /// </summary>
         private bool OverwriteExisting { get; set; } = false;
+        public bool UseStructureDictionary { get; }
+
         /// <summary>
         /// The DICOM type of the structure if it is being created.
         /// </summary>
@@ -47,6 +50,16 @@ namespace OSUStructureGenerator
         /// <exception cref="ArgumentException">Will throw an argument exception if no DICOM type is provided when creating a new structure.</exception>
         public StructureGenerationFromText(string line, StructureSet structureSet)
         {
+            if (line.ToCharArray()[0] == '*')
+            {
+                UseStructureDictionary = true;
+                if (StructureDictionaryService.StructureDictionary==null)
+                {
+                    StructureDictionaryService.ServerId = "GatewayZ-TBOX";
+                    StructureDictionaryService.InitializeStructureDictionary();
+                }
+                line = line.Substring(1);
+            }
             if (line.ToCharArray()[0] == '!' || line.ToCharArray()[0] == '~')
                 OverwriteExisting = true;
 
@@ -409,7 +422,20 @@ namespace OSUStructureGenerator
         /// <returns>ESAPI <see cref="Structure"/> found.</returns>
         private Structure GetStructureFromBase(string s)
         {
-            return BaseStructureSet.Structures.First(a => a.Id.ToUpper() == s.ToUpper());
+            var baseStructure= BaseStructureSet.Structures.FirstOrDefault(a => a.Id.ToUpper() == s.ToUpper());
+            if(baseStructure == null && UseStructureDictionary)
+            {
+                var matches = StructureDictionaryService.GetDictionaryValues(s);
+                foreach(var match in matches)
+                {
+                    if (BaseStructureSet.Structures.Any(a => a.Id.Equals(match, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        baseStructure = BaseStructureSet.Structures.First(a => a.Id.Equals(match, StringComparison.OrdinalIgnoreCase));
+                        break;
+                    }
+                }
+            }
+            return baseStructure;
         }
 
         /// <summary>
@@ -419,7 +445,7 @@ namespace OSUStructureGenerator
         /// <returns>ESAPI <see cref="SegmentVolume"/> found.</returns>
         private SegmentVolume GetSegmentVolumeFromBase(string v)
         {
-            return BaseStructureSet.Structures.First(a => a.Id.ToUpper() == v.ToUpper()).SegmentVolume;
+            return GetStructureFromBase(v).SegmentVolume;
         }
 
         /// <summary>

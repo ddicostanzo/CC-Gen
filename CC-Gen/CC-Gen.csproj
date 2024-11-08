@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="EsapiConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StructureDictionaryService.cs" />
     <Compile Include="StructureFromText.cs" />
   </ItemGroup>
   <ItemGroup>
