@@ -7,11 +7,13 @@ The basic premise of CC-Gen is to quickly generate multiple structures from a te
 # General Format of a Text File Template
 The general format for a structure is as follows:
 
-StructureID,DICOM Type = BaseStructure.Operation1(argument1,argument2,...).Operation2(argument1...)
+StructureID,DICOM Type|0,255,128 = BaseStructure.Operation1(argument1,argument2,...).Operation2(argument1...)
 
 The first supplied value from the user is the Structure ID for a newly created structure. It must conform to the Eclipse naming conventions: 16 characters max length, no trailing or leading spaces, etc. If the supplied ID is longer than 16 characters, it will be truncated to 16.
 
 The second provided value from the user is the DICOM Type of the structure. This value is required for new structures, but is not if the user is replacing a structure geometry. Valid DICOM Types are: GTV, CTV, PTV, AVOIDANCE, CONTROL, MARKER, or ORGAN.
+
+The pipe "|" is used to show an optional third option that allows a user to set a color. The color is defined with three integers between 0-255 to set the RGB colors. 
 
 An equal sign must exist between the structure identification and the operations to take place.
 
