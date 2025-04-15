@@ -8,8 +8,6 @@ using VMS.TPS.Common.Model.Types;
 using OSU_Helpers;
 using System.Windows;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using StructureBuilder;
 
 namespace OSUStructureGenerator
 {
@@ -30,8 +28,6 @@ namespace OSUStructureGenerator
         /// The flag as to whether to overwrite a structure or create a new one.
         /// </summary>
         private bool OverwriteExisting { get; set; } = false;
-        public bool UseStructureDictionary { get; }
-
         /// <summary>
         /// The DICOM type of the structure if it is being created.
         /// </summary>
@@ -50,16 +46,6 @@ namespace OSUStructureGenerator
         /// <exception cref="ArgumentException">Will throw an argument exception if no DICOM type is provided when creating a new structure.</exception>
         public StructureGenerationFromText(string line, StructureSet structureSet)
         {
-            if (line.ToCharArray()[0] == '*')
-            {
-                UseStructureDictionary = true;
-                if (StructureDictionaryService.StructureDictionary==null)
-                {
-                    StructureDictionaryService.ServerId = "GatewayZ-TBOX";
-                    StructureDictionaryService.InitializeStructureDictionary();
-                }
-                line = line.Substring(1);
-            }
             if (line.ToCharArray()[0] == '!' || line.ToCharArray()[0] == '~')
                 OverwriteExisting = true;
 
@@ -72,15 +58,7 @@ namespace OSUStructureGenerator
             //operations => [0]PTV     [1]Ring(5,20)    [2]CropOut(Body,3)
 
             //_Opti,AVOIDANCE
-            //check if color was provided prior to getting ID and type.
-            string id_part = target_and_operation[0];
-            string colorPart = String.Empty;
-            if (id_part.Contains("|"))
-            {
-                id_part = target_and_operation[0].Split('|').First();
-                colorPart = target_and_operation[0].Split('|').Last();
-            }
-            string[] id_and_type = id_part.Split(',');
+            string[] id_and_type = target_and_operation[0].Split(',');
             //id_and_type => [0]_Opti   [1]AVOIDANCE
 
             id = ValidateStructureID(id_and_type[0]);
@@ -109,21 +87,7 @@ namespace OSUStructureGenerator
 
                 }
             }
-            if (!String.IsNullOrEmpty(colorPart))
-            {
-                string[] colors = colorPart.Split(',');
-                if (colors.Length != 3)
-                {
-                    MessageBox.Show($"Color provided but incorrect format: {colorPart}");
-                }
-                else
-                {
-                    GeneratedStructure.Color = System.Windows.Media.Color.FromRgb(
-                        Convert.ToByte(Convert.ToInt16(colors.First())),
-                        Convert.ToByte(Convert.ToInt16(colors.ElementAt(1))),
-                        Convert.ToByte(Convert.ToInt16(colors.Last())));
-                }
-            }
+
             GeneratedStructure.SegmentVolume = GetSegmentVolumeFromBase(operations[0]);
             ApplyOperations(operations, line);
         }
@@ -422,20 +386,7 @@ namespace OSUStructureGenerator
         /// <returns>ESAPI <see cref="Structure"/> found.</returns>
         private Structure GetStructureFromBase(string s)
         {
-            var baseStructure= BaseStructureSet.Structures.FirstOrDefault(a => a.Id.ToUpper() == s.ToUpper());
-            if(baseStructure == null && UseStructureDictionary)
-            {
-                var matches = StructureDictionaryService.GetDictionaryValues(s);
-                foreach(var match in matches)
-                {
-                    if (BaseStructureSet.Structures.Any(a => a.Id.Equals(match, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        baseStructure = BaseStructureSet.Structures.First(a => a.Id.Equals(match, StringComparison.OrdinalIgnoreCase));
-                        break;
-                    }
-                }
-            }
-            return baseStructure;
+            return BaseStructureSet.Structures.First(a => a.Id.ToUpper() == s.ToUpper());
         }
 
         /// <summary>
@@ -445,7 +396,7 @@ namespace OSUStructureGenerator
         /// <returns>ESAPI <see cref="SegmentVolume"/> found.</returns>
         private SegmentVolume GetSegmentVolumeFromBase(string v)
         {
-            return GetStructureFromBase(v).SegmentVolume;
+            return BaseStructureSet.Structures.First(a => a.Id.ToUpper() == v.ToUpper()).SegmentVolume;
         }
 
         /// <summary>
