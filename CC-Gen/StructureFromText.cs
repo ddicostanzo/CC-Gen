@@ -58,8 +58,15 @@ namespace OSUStructureGenerator
             //operations => [0]PTV     [1]Ring(5,20)    [2]CropOut(Body,3)
 
             //_Opti,AVOIDANCE
-            string[] id_and_type = target_and_operation[0].Split(',');
-            //id_and_type => [0]_Opti   [1]AVOIDANCE
+            //check if color was provided prior to getting ID and type.
+            string id_part = target_and_operation[0];
+            string colorPart = String.Empty;
+            if (id_part.Contains("|"))
+            {
+                id_part = target_and_operation[0].Split('|').First();
+                colorPart = target_and_operation[0].Split('|').Last();
+            }
+            string[] id_and_type = id_part.Split(',');
 
             id = ValidateStructureID(id_and_type[0]);
 
@@ -85,6 +92,22 @@ namespace OSUStructureGenerator
                     return;
                     //GeneratedStructure = BaseStructureSet.AddStructure("CONTROL", id);
 
+                }
+            }
+
+            if (!String.IsNullOrEmpty(colorPart))
+            {
+                string[] colors = colorPart.Split(',');
+                if (colors.Length != 3)
+                {
+                    MessageBox.Show($"Color provided but incorrect format: {colorPart}");
+                }
+                else
+                {
+                    GeneratedStructure.Color = System.Windows.Media.Color.FromRgb(
+                        Convert.ToByte(Convert.ToInt16(colors.First())),
+                        Convert.ToByte(Convert.ToInt16(colors.ElementAt(1))),
+                        Convert.ToByte(Convert.ToInt16(colors.Last())));
                 }
             }
 
