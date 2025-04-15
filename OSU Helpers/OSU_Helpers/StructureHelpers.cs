@@ -594,14 +594,22 @@ namespace OSU_Helpers
         public static SegmentVolume UnionStructures(this StructureSet set, ICollection<Structure> StructureOne, ICollection<Structure> StructureTwo)
         {
             SegmentVolume sv1 = StructureOne.TotalSegmentVolume(set);
-            var tempstruct = StructureOne.First();
-            tempstruct.SegmentVolume = sv1;
+            Structure temp_struct = set.AddStructure("CONTROL", "_Temp1");
+            temp_struct.SegmentVolume = sv1;
+            // var tempstruct = StructureOne.First();
+            // tempstruct.SegmentVolume = sv1;
 
             SegmentVolume sv2 = StructureTwo.TotalSegmentVolume(set);
-            var return_structure = StructureTwo.First();
+            Structure return_structure = set.AddStructure("CONTROL", "_Temp2");
             return_structure.SegmentVolume = sv2;
+            // var return_structure = StructureTwo.First();
+            // return_structure.SegmentVolume = sv2;
 
-            return TotalSegmentVolume(new List<Structure>() { return_structure, tempstruct });
+            // return TotalSegmentVolume(new List<Structure>() { return_structure, temp_struct });
+            SegmentVolume return_sv = TotalSegmentVolume(new List<Structure>() { return_structure, temp_struct });
+            set.RemoveStructure(temp_struct);
+            set.RemoveStructure(return_structure);
+            return return_sv;
 
         }
 
